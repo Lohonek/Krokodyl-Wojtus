@@ -28,7 +28,7 @@ module.exports = {
     const { options, guildId, guild, member } = interaction
 
     const user = options.getUser('user')
-    const targetMember = await guild.member.fetch(member)
+    const targetMember = await guild.members.fetch(member)
 
     const rEmbed = new EmbedBuilder()
       .setColor('FFFFFF')

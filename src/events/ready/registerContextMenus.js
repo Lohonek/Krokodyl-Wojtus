@@ -10,7 +10,7 @@ module.exports = async (client) => {
     const applicationContextMenus = await getApplicationContextMenus(
       client,
       testServerId
-    )
+    ) //, testServerId);
 
     for (const localContextMenu of localContextMenus) {
       const { data } = localContextMenu
@@ -23,29 +23,33 @@ module.exports = async (client) => {
       )
 
       if (existingContextMenu) {
-        if (localContexMenus.deleted) {
-          await applicationContextMenus.deleted(existingContextMenu.id)
-          console.log(`Application ${contextMenuName} has been deleted`.red)
-          continue
-        } else {
-          if (localContexMenus.deleted) {
-            console.log(
-              `Application command ${contextMenuName} has been skipped, since the property 'deleted' is set to 'true'`
-                .grey
-            )
-            continue
-          }
-          await applicationContextMenus.create({
-            name: contextMenuName,
-            type: contextMenuType,
-          })
+        if (localContextMenu.deleted) {
+          await applicationContextMenus.delete(existingContextMenu.id)
           console.log(
-            `Application command ${contextMenuName} has been registered`.green
+            `Application command ${contextMenuName} has been deleted.`.red
           )
+          continue
         }
+      } else {
+        if (localContextMenu.deleted) {
+          console.log(
+            `Application command ${contextMenuName} has been skipped, since property "deleted" is set to "true".`
+              .grey
+          )
+          continue
+        }
+
+        await applicationContextMenus.create({
+          name: contextMenuName,
+          type: contextMenuType,
+        })
+        console.log(
+          `Application command ${contextMenuName} has been registered.`.green
+        )
       }
     }
   } catch (err) {
     console.log(`An error occurred! ${err}`.red)
+    console.log(err)
   }
 }
