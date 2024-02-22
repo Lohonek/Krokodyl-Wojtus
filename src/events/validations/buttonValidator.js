@@ -9,7 +9,7 @@ module.exports = async (client, interaction) => {
 
   try {
     const buttonObject = localCommands.find(
-      (cmd) => cmd.data.name === interaction.commandName
+      (btn) => btn.customId === interaction.customId
     )
     if (!buttonObject) return
 

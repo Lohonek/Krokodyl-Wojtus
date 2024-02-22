@@ -1,6 +1,5 @@
 require('colors')
 
-const { testServerId } = require('../../config.json')
 const commandComparing = require('../../utils/commandComparing')
 const getApplicationCommands = require('../../utils/getApplicationCommands')
 const getLocalCommands = require('../../utils/getLocalCommands')
@@ -8,7 +7,7 @@ const getLocalCommands = require('../../utils/getLocalCommands')
 module.exports = async (client) => {
   try {
     const localCommands = getLocalCommands()
-    const applicationCommands = await getApplicationCommands(client)
+    const applicationCommands = await getApplicationCommands(client) //, testServerId);
 
     for (const localCommand of localCommands) {
       const { data } = localCommand
@@ -23,10 +22,13 @@ module.exports = async (client) => {
 
       if (existingCommand) {
         if (localCommand.deleted) {
-          await applicationCommands.deleted(existingCommand.id)
-          console.log(`Application ${commandName} has been deleted`.red)
+          await applicationCommands.delete(existingCommand.id)
+          console.log(
+            `Application command ${commandName} has been deleted.`.red
+          )
           continue
         }
+
         if (commandComparing(existingCommand, localCommand)) {
           await applicationCommands.edit(existingCommand.id, {
             name: commandName,
@@ -34,28 +36,30 @@ module.exports = async (client) => {
             options: commandOptions,
           })
           console.log(
-            `Application command ${commandName} has been edited`.yellow
-          )
-        } else {
-          if (localCommand.deleted) {
-            console.log(
-              `Application command ${commandName} has been skipped, since the property 'deleted' is set to 'true'`
-                .grey
-            )
-            continue
-          }
-          await applicationCommands.create({
-            name: commandName,
-            description: commandDescription,
-            options: commandOptions,
-          })
-          console.log(
-            `Application command ${commandName} has been registered`.green
+            `Application command ${commandName} has been edited.`.yellow
           )
         }
+      } else {
+        if (localCommand.deleted) {
+          console.log(
+            `Application command ${commandName} has been skipped, since property "deleted" is set to "true".`
+              .grey
+          )
+          continue
+        }
+
+        await applicationCommands.create({
+          name: commandName,
+          description: commandDescription,
+          options: commandOptions,
+        })
+        console.log(
+          `Application command ${commandName} has been registered.`.green
+        )
       }
     }
   } catch (err) {
     console.log(`An error occurred! ${err}`.red)
+    console.log(err)
   }
 }

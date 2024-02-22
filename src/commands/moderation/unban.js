@@ -16,7 +16,8 @@ module.exports = {
         .setName('user_id')
         .setDescription('The id of the user whose ban you want to revoke ')
         .setRequired(true)
-    ).toJSON,
+    )
+    .toJSON(),
 
   userPermissions: [PermissionFlagsBits.ManageMessages],
   botPermissions: [PermissionFlagsBits.BanMembers],
