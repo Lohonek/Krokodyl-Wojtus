@@ -6,8 +6,8 @@ const getLocalContextMenus = require('../../utils/getLocalContextMenus')
 
 module.exports = async (client) => {
   try {
-    const localContexMenus = getLocalContextMenus()
-    const applicationContextMenus = await getApplicationContexMenus(
+    const localContextMenus = getLocalContextMenus()
+    const applicationContextMenus = await getApplicationContextMenus(
       client,
       testServerId
     )

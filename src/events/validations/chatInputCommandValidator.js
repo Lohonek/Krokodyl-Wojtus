@@ -49,10 +49,8 @@ module.exports = async (client, interaction) => {
 
     try {
       await commandObject.run(client, interaction)
-    } catch (error) {
-      console.log(
-        `[ERROR] an error occured inside the command validator: \n ${error}`.red
-      )
+    } catch (err) {
+      console.log(`[ERROR] an error occured ${err}`.red)
     }
   }
 }
