@@ -1,5 +1,7 @@
+require('colors')
+
 const { EmbedBuilder } = require('discord.js')
-const { developerId, testServerId } = require('../../config.json')
+const { developersId, testServerId } = require('../../config.json')
 const mConfig = require('../../messageConfig.json')
 const getButtons = require('../../utils/getButtons')
 
@@ -8,7 +10,7 @@ module.exports = async (client, interaction) => {
   const buttons = getButtons()
 
   try {
-    const buttonObject = localCommands.find(
+    const buttonObject = buttons.find(
       (btn) => btn.customId === interaction.customId
     )
     if (!buttonObject) return
@@ -34,8 +36,8 @@ module.exports = async (client, interaction) => {
     }
 
     if (buttonObject.userPermissions?.length) {
-      for (const permissions of buttonObject.userPermissions) {
-        if (interaction.member.permissions.has(permissions)) {
+      for (const permission of buttonObject.userPermissions) {
+        if (interaction.member.permissions.has(permission)) {
           continue
         }
         const rEmbed = new EmbedBuilder()
@@ -46,10 +48,10 @@ module.exports = async (client, interaction) => {
       }
     }
 
-    if (buttonObject.botrPermissions?.length) {
-      for (const permissions of buttonObject.botPermissions) {
+    if (buttonObject.botPermissions?.length) {
+      for (const permission of buttonObject.botPermissions) {
         const bot = interaction.guild.members.me
-        if (bot.permissions.has(permissions)) {
+        if (bot.permissions.has(permission)) {
           continue
         }
         const rEmbed = new EmbedBuilder()

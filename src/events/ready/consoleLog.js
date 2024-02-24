@@ -1,16 +1,13 @@
 require('colors')
-
 const mongoose = require('mongoose')
-const mongoURL = process.env.MONGO_URL
+const mongoURI = process.env.MONGODB_TOKEN
 
 module.exports = async (client) => {
-  console.log(`[INFO] ${client.user.username} is online!`.blue)
-
-  if (!mongoURL) return
-
+  console.log(`${client.user.username} is online.`.blue)
+  if (!mongoURI) return
   mongoose.set('strictQuery', true)
 
-  if (await mongoose.connect(mongoURL)) {
-    console.log(`[INFO] Connected to DB`.blue)
+  if (await mongoose.connect(mongoURI)) {
+    console.log(`Connected to the MongoDB database.`.blue)
   }
 }

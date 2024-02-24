@@ -1,5 +1,6 @@
 require('colors')
 
+const { testServerId } = require('../../config.json')
 const commandComparing = require('../../utils/commandComparing')
 const getApplicationCommands = require('../../utils/getApplicationCommands')
 const getLocalCommands = require('../../utils/getLocalCommands')
@@ -60,6 +61,5 @@ module.exports = async (client) => {
     }
   } catch (err) {
     console.log(`An error occurred! ${err}`.red)
-    console.log(err)
   }
 }

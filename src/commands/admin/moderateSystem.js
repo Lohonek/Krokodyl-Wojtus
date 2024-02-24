@@ -4,24 +4,24 @@ const {
   ChannelType,
   EmbedBuilder,
 } = require('discord.js')
-
 const moderationSchema = require('../../schemas/moderation')
 const mConfig = require('../../messageConfig.json')
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('moderatesystem')
-    .setDescription('An advanced moderating system')
+    .setDescription('An advanced moderating system.')
     .addSubcommand((s) =>
       s
         .setName('configure')
         .setDescription(
-          'Configures the advanced moderating system into the server'
+          'Configures the advanced moderating system into the server.'
         )
         .addChannelOption((o) =>
           o
             .setName('logging_channel')
-            .setDescription('The channel where all moderation will be logged')
+            .setDescription('The channel where all moderations will be logged.')
+            .setRequired(true)
             .addChannelTypes(ChannelType.GuildText)
         )
     )
@@ -29,7 +29,7 @@ module.exports = {
       s
         .setName('remove')
         .setDescription(
-          'Removes the advanced moderation system from the server'
+          'Removes the advanced moderation system from the server.'
         )
     )
     .toJSON(),
@@ -39,7 +39,6 @@ module.exports = {
   run: async (client, interaction) => {
     const { options, guildId, guild } = interaction
     const subcmd = options.getSubcommand()
-
     if (!['configure', 'remove'].includes(subcmd)) return
 
     const rEmbed = new EmbedBuilder().setFooter({
@@ -51,14 +50,14 @@ module.exports = {
       case 'configure':
         const loggingChannel = options.getChannel('logging_channel')
 
-        let dataGD = await moderationSchema.findOne({ GuildId: guildId })
-
+        let dataGD = await moderationSchema.findOne({ GuildID: guildId })
         if (!dataGD) {
           rEmbed
-            .setColor(`${mConfig.embedColorWarning}`)
+            .setColor(mConfig.embedColorWarning)
             .setDescription(
-              '`⌛` New server detected: Configuring the advanced moderating system...'
+              '`⌛` New server detected: Configuring the advanced moderation system...'
             )
+
           await interaction.reply({
             embeds: [rEmbed],
             fetchReply: true,
@@ -66,16 +65,15 @@ module.exports = {
           })
 
           dataGD = new moderationSchema({
-            GuildId: guildId,
+            GuildID: guildId,
             LogChannelID: loggingChannel.id,
           })
-
           dataGD.save()
 
           rEmbed
             .setColor(mConfig.embedColorSuccess)
             .setDescription(
-              `\`👩\` Successfully configured advanced moderation system`
+              `\`✅\` Successfully configured the advanced moderation system.`
             )
             .addFields({
               name: 'Logging channel',
@@ -88,14 +86,14 @@ module.exports = {
           }, 2_000)
         } else {
           await moderationSchema.findOneAndUpdate(
-            { GuildId: guildId },
+            { GuildID: guildId },
             { LogChannelID: loggingChannel.id }
           )
 
           rEmbed
             .setColor(mConfig.embedColorSuccess)
             .setDescription(
-              `\`👩\` Successfully updated the advanced moderation system`
+              `\`✅\` Successfully updated the advanced moderation system.`
             )
             .addFields({
               name: 'Logging channel',
@@ -106,26 +104,25 @@ module.exports = {
           interaction.reply({ embeds: [rEmbed], ephemeral: true })
         }
         break
-
       case 'remove':
-        const removed = await moderationSchema.findByIdAndDelete({
+        const removed = await moderationSchema.findOneAndDelete({
           GuildID: guildId,
         })
-
         if (removed) {
           rEmbed
             .setColor(mConfig.embedColorSuccess)
             .setDescription(
-              `\`➕\` Successfully removed the advanced moderation system`
+              `\`✅\` Successfully removed the advanced moderation system.`
             )
         } else {
           rEmbed
             .setColor(mConfig.embedColorError)
             .setDescription(
-              `\`➕\` This server isn't configured yet, Use /moderatesystem to start configuring this system`
+              `\`❌\` This server isn't configured yet.\n\n\`💡\` Use \`/moderatesystem configure\` to start configuring this server`
             )
         }
         interaction.reply({ embeds: [rEmbed], ephemeral: true })
+        break
     }
   },
 }

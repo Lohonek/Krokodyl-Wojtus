@@ -6,7 +6,6 @@ module.exports = (client) => {
 
   for (const eventFolder of eventFolders) {
     const eventFiles = getAllFiles(eventFolder)
-
     let eventName
     eventName = eventFolder.replace(/\\/g, '/').split('/').pop()
 

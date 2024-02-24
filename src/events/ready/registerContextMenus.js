@@ -10,7 +10,7 @@ module.exports = async (client) => {
     const applicationContextMenus = await getApplicationContextMenus(
       client,
       testServerId
-    ) //, testServerId);
+    )
 
     for (const localContextMenu of localContextMenus) {
       const { data } = localContextMenu
@@ -50,6 +50,5 @@ module.exports = async (client) => {
     }
   } catch (err) {
     console.log(`An error occurred! ${err}`.red)
-    console.log(err)
   }
 }

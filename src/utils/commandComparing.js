@@ -3,7 +3,10 @@ module.exports = (existing, local) => {
 
   if (
     changed(existing.name, local.data.name) ||
-    changed(existing.description, local.data.description)
+    changed(
+      existing.description || undefined,
+      local.data.description || undefined
+    )
   ) {
     return true
   }
@@ -12,6 +15,7 @@ module.exports = (existing, local) => {
     optionsArray(existing),
     optionsArray(local.data)
   )
+
   return optionsChanged
 
   function optionsArray(cmd) {
@@ -19,7 +23,7 @@ module.exports = (existing, local) => {
       for (const key in obj) {
         if (typeof obj[key] === 'object') {
           cleanObject(obj[key])
-          if (!obj[key] || (Array.isArray(obj[key]) && obj[key].length === 0)) {
+          if (!obj[key] || (Array.isArray(obj[key]) && !obj[key].length)) {
             delete obj[key]
           }
         } else if (obj[key] === undefined) {
@@ -27,6 +31,7 @@ module.exports = (existing, local) => {
         }
       }
     }
+
     const normalizeObject = (input) => {
       if (Array.isArray(input)) {
         return input.map((item) => normalizeObject(item))
@@ -52,9 +57,13 @@ module.exports = (existing, local) => {
       return {
         ...cleanedOption,
         choices: cleanedOption.choices
-          ? JSON.stringify(cleanedOption.choices.map((c) => c.value))
+          ? stringifyChoices(cleanedOption.choices)
           : null,
       }
     })
+  }
+
+  function stringifyChoices(choices) {
+    return JSON.stringify(choices.map((c) => c.value))
   }
 }

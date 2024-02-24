@@ -2,7 +2,7 @@ const { model, Schema } = require('mongoose')
 
 let moderationSchema = new Schema(
   {
-    GuildId: String,
+    GuildID: String,
     LogChannelID: String,
   },
   { strict: false }

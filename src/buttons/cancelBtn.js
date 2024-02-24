@@ -6,6 +6,6 @@ module.exports = {
   botPermissions: [],
 
   run: async (client, interaction) => {
-    await interaction.message.delete()
+    interaction.message.delete()
   },
 }
