@@ -66,6 +66,70 @@ module.exports = {
     }
     reasonObj.delete()
 
+    // Level 2
+    let dataMG = await moderationSchema.find({ MultiGuilded: true })
+    if (dataMG) {
+      let i
+      for (i = 0; i < dataMG.length; i++) {
+        const { GuildID, LogChannelID } = dataMG[i]
+        if (GuildID === guildId) continue
+
+        const externalGuild = client.guilds.cache.get(GuildID)
+        const externalLogChannel =
+          externalGuild.channels.cache.get(LogChannelID)
+        const externalBot = await externalGuild.members.fetch(client.user.id)
+
+        try {
+          const externalMember = await externalGuild.members.fetch(
+            targetMember.id
+          )
+
+          if (
+            externalMember.roles.highest.position >=
+            externalBot.roles.highest.position
+          )
+            continue
+
+          await externalGuild.bans.create(externalMember, {
+            deleteMessageSeconds: 60 * 60 * 24 * 7,
+            reason: 'Automatic multi-guilded ban.',
+          })
+
+          const lEmbed = new EmbedBuilder()
+            .setColor('White')
+            .setTitle('`⛔` User banned')
+            .setAuthor({
+              name: externalMember.user.username,
+              iconURL: externalMember.user.displayAvatarURL({ dynamic: true }),
+            })
+            .setDescription(
+              `\`💡\` To unban ${externalMember.user.username}, use \`/unban ${externalMember.user.id}\` to revoke this ban.`
+            )
+            .addFields(
+              {
+                name: 'Banned by',
+                value: `<@${client.user.id}>`,
+                inline: true,
+              },
+              {
+                name: 'Reason',
+                value: '`Automatic multi-guilded ban.`',
+                inline: true,
+              }
+            )
+            .setFooter({
+              iconURL: `${client.user.displayAvatarURL({ dynamic: true })}`,
+              text: `${client.user.username} - Logging system`,
+            })
+
+          externalLogChannel.send({ embeds: [lEmbed] })
+        } catch (error) {
+          continue
+        }
+      }
+    }
+    // Level 2
+
     targetMember.ban({
       reason: `${reason}`,
       deleteMessageSeconds: 60 * 60 * 24 * 7,

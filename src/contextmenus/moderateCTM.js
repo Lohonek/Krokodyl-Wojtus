@@ -49,15 +49,18 @@ module.exports = {
 
     const moderationButtons = new ActionRowBuilder().setComponents(
       new ButtonBuilder()
-        .setCustomId('banBtn')
-        .setLabel('Server ban')
-        .setStyle(ButtonStyle.Danger),
+        .setCustomId('punishmentBtn')
+        .setLabel('Punishments')
+        .setEmoji('👟')
+        .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
-        .setCustomId('kickBtn')
-        .setLabel('Server kick')
-        .setStyle(ButtonStyle.Danger),
+        .setCustomId('otherBtn')
+        .setLabel('Utility')
+        .setEmoji('📋')
+        .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setCustomId('cancelBtn')
+        .setEmoji('❌')
         .setLabel('Cancel')
         .setStyle(ButtonStyle.Secondary)
     )

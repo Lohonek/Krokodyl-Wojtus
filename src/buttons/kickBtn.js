@@ -66,6 +66,65 @@ module.exports = {
     }
     reasonObj.delete()
 
+    // Level 2
+    let dataMG = await moderationSchema.find({ MultiGuilded: true })
+    if (dataMG) {
+      let i
+      for (i = 0; i < dataMG.length; i++) {
+        const { GuildID, LogChannelID } = dataMG[i]
+        if (GuildID === guildId) continue
+
+        const externalGuild = client.guilds.cache.get(GuildID)
+        const externalLogChannel =
+          externalGuild.channels.cache.get(LogChannelID)
+        const externalBot = await externalGuild.members.fetch(client.user.id)
+
+        try {
+          const externalMember = await externalGuild.members.fetch(
+            targetMember.id
+          )
+
+          if (
+            externalMember.roles.highest.position >=
+            externalBot.roles.highest.position
+          )
+            continue
+
+          await externalMember.kick('Automatic multi-guilded kick.')
+
+          const lEmbed = new EmbedBuilder()
+            .setColor('White')
+            .setTitle('`👟` User kicked')
+            .setAuthor({
+              name: externalMember.user.username,
+              iconURL: externalMember.user.displayAvatarURL({
+                dynamic: true,
+              }),
+            })
+            .addFields(
+              {
+                name: 'Kicked by',
+                value: `<@${client.user.id}>`,
+                inline: true,
+              },
+              {
+                name: 'Reason',
+                value: '`Automatic multi-guilded kicked.`',
+                inline: true,
+              }
+            )
+            .setFooter({
+              iconURL: `${client.user.displayAvatarURL({ dynamic: true })}`,
+              text: `${client.user.username} - Logging system`,
+            })
+
+          externalLogChannel.send({ embeds: [lEmbed] })
+        } catch (error) {
+          continue
+        }
+      }
+    }
+    // Level 2
     targetMember.kick(`${reason}`)
 
     let dataGD = await moderationSchema.findOne({ GuildID: guildId })
