@@ -1,11 +1,11 @@
 const { PermissionFlagsBits } = require('discord.js')
 
 module.exports = {
-  customId: 'cancelBtn',
-  userPermissions: [],
-  botPermissions: [],
+    customId: 'cancelBtn',
+    userPermissions: [],
+    botPermissions: [],
 
-  run: async (client, interaction) => {
-    interaction.message.delete()
-  },
+    run: async (client, interaction) => {
+        interaction.message.delete()
+    },
 }

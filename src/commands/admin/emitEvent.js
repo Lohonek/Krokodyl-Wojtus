@@ -1,36 +1,42 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('emit-event')
-    .setDescription('Emit an event to the client.')
-    .addStringOption((option) =>
-      option
-        .setName('event')
-        .setDescription('The event to emit.')
-        .setRequired(true)
-        .addChoices({ name: 'guildMemberUpdate', value: 'guildMemberUpdate' })
-    )
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-  userPermissions: [PermissionFlagsBits.Administrator],
-  botPermissions: [],
-  run: async (client, interaction) => {
-    const { member, options } = interaction
+    data: new SlashCommandBuilder()
+        .setName('emit-event')
+        .setDescription('Emit an event to the client.')
+        .addStringOption((option) =>
+            option
+                .setName('event')
+                .setDescription('The event to emit.')
+                .setRequired(true)
+                .addChoices({
+                    name: 'guildMemberUpdate',
+                    value: 'guildMemberUpdate',
+                })
+        )
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    userPermissions: [PermissionFlagsBits.Administrator],
+    botPermissions: [],
+    run: async (client, interaction) => {
+        const { member, options } = interaction
 
-    const event = options.getString('event')
+        const event = options.getString('event')
 
-    switch (event) {
-      case 'guildMemberUpdate':
-        client.emit('guildMemberUpdate', member, member)
-        break
-      default:
-        interaction.reply({ content: 'Invalid event.', ephemeral: true })
-        break
-    }
+        switch (event) {
+            case 'guildMemberUpdate':
+                client.emit('guildMemberUpdate', member, member)
+                break
+            default:
+                interaction.reply({
+                    content: 'Invalid event.',
+                    ephemeral: true,
+                })
+                break
+        }
 
-    interaction.reply({
-      content: `Emitted event \`${event}\``,
-      ephemeral: true,
-    })
-  },
+        interaction.reply({
+            content: `Emitted event \`${event}\``,
+            ephemeral: true,
+        })
+    },
 }
