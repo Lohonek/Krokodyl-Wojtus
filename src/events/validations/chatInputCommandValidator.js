@@ -4,6 +4,7 @@ const { EmbedBuilder } = require('discord.js')
 const { developersId, testServerId } = require('../../config.json')
 const mConfig = require('../../messageConfig.json')
 const getLocalCommands = require('../../utils/getLocalCommands')
+const userPremiumSchema = require('../../schemas/userpremium')
 
 module.exports = async (client, interaction) => {
     if (!interaction.isChatInputCommand()) return
@@ -20,6 +21,19 @@ module.exports = async (client, interaction) => {
                 const rEmbed = new EmbedBuilder()
                     .setColor(`${mConfig.embedColorError}`)
                     .setDescription(`${mConfig.commandDevOnly}`)
+                interaction.reply({ embeds: [rEmbed], ephemeral: true })
+                return
+            }
+        }
+
+        if (commandObject.premiumOnly) {
+            const userData = await userPremiumSchema.findOne({
+                UserID: interaction.user.id,
+            })
+            if (!userData) {
+                const rEmbed = new EmbedBuilder()
+                    .setColor(`${mConfig.embedColorError}`)
+                    .setDescription(`${mConfig.commandPremiumOnly}`)
                 interaction.reply({ embeds: [rEmbed], ephemeral: true })
                 return
             }
@@ -64,6 +78,9 @@ module.exports = async (client, interaction) => {
 
         await commandObject.run(client, interaction)
     } catch (err) {
-        console.log(`An error occurred! ${err}`.red)
+        console.log(
+            `An error occurred while validating chat input commands! ${err}`.red
+        )
+        console.log(err)
     }
 }
