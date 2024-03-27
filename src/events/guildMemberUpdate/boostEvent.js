@@ -8,6 +8,7 @@ const boostSchema = require('../../schemas/boostSchema')
  */
 
 module.exports = async (client, oldMember, newMember) => {
+    if (!oldMember || !newMember) return
     if (!oldMember.premiumSince && newMember.premiumSince) {
         const boostData = await boostSchema.findOne({
             guildID: oldMember.guild.id,

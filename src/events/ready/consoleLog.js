@@ -8,6 +8,6 @@ module.exports = async (client) => {
     mongoose.set('strictQuery', true)
 
     if (await mongoose.connect(mongoURI)) {
-        console.log(`Connected to the MongoDB database.`.green)
+        console.log(`Connected to the MongoDB database.`.blue)
     }
 }
